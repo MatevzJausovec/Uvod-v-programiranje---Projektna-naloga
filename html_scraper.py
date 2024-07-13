@@ -51,12 +51,13 @@ def write_csv(fieldnames, rows, directory, filename):
             writer.writerow(strat)
     return
 
+# 1. del: tier list
+
 # save_frontpage(html_tier_list, mapa_podatkov, file_tier_list)
 
-# 1. del: tier list
-    
-def top_decks_reader(string):
-    vzorec = r'<div class="label svelte-1w4psuu">(.+?)</div>.+?<div class="power-label svelte-1winidr">Power: <b>(\d\d?\.\d)</b></div>'
+
+def tier_list_reader(string):
+    vzorec = r'<div class="label svelte-1w4psuu">(?P<ime strategije>.+?)</div>.+?<div class="power-label svelte-1winidr">Power: <b>(?P<moč>\d\d?\.\d)</b></div>'
     sez = re.findall(vzorec, string, flags=re.DOTALL)
     nov_sez = []
     for par in sez:
@@ -72,11 +73,20 @@ def top_decks_reader(string):
 
 # prilični je zaporedje pojavetve v html datoteki že razvrščeno po moči
 
-# top_decks = top_decks_reader(read_file_to_string(mapa_podatkov, file_tier_list))
-# write_csv(["ime strategije","moč","stopnja"], top_decks, mapa_podatkov, "top_decks.csv  ")
+# tier_list = tier_list_reader(read_file_to_string(mapa_podatkov, file_tier_list))
+# write_csv(["ime strategije","moč","stopnja"], tier_list, mapa_podatkov, "tier_list.csv  ")
 
-# 2. del: top decks
+# 2. del: top decks (2 tedna nazaj)
 
 # save_frontpage(html_top_decks, mapa_podatkov, file_top_decks)
 
+def top_decks_reader(string):
+    new_string = string.split(r'mn mt-1 is-full-tablet safar')[1]
+    vzorec = r'label svelte-1w4psuu padding">(?P<ime_strategije>.+?)</div>.+?bottom-sub-label svelte-1w4psuu">(?P<število_zbirov>\d+)</div></div>'
+    sez = [pojavitev.groupdict() for pojavitev in re.finditer(vzorec, new_string, flags=re.DOTALL)]
+    return sez
+    
+# top_decks = top_decks_reader(read_file_to_string(mapa_podatkov, file_top_decks))
 
+
+# že razvrščeno po številu objavljenih seznamov za strategijo
