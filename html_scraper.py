@@ -44,7 +44,7 @@ def write_csv(fieldnames, rows, directory, filename):
     """
     os.makedirs(directory, exist_ok=True)
     path = os.path.join(directory, filename)
-    with open(path, 'w', encoding='utf-8') as csv_file:
+    with open(path, 'w', encoding='utf-8',  newline='') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
         for strat in rows:
@@ -57,7 +57,7 @@ def write_csv(fieldnames, rows, directory, filename):
 
 
 def tier_list_reader(string):
-    vzorec = r'<div class="label svelte-1w4psuu">(?P<ime strategije>.+?)</div>.+?<div class="power-label svelte-1winidr">Power: <b>(?P<moč>\d\d?\.\d)</b></div>'
+    vzorec = r'<div class="label svelte-1w4psuu">(?P<ime_strategije>.+?)</div>.+?<div class="power-label svelte-1winidr">Power: <b>(?P<moč>\d\d?\.\d)</b></div>'
     sez = re.findall(vzorec, string, flags=re.DOTALL)
     nov_sez = []
     for par in sez:
@@ -68,7 +68,7 @@ def tier_list_reader(string):
             rang = "2."
         elif float(par[1]) >= 3:
             rang = "3."
-        nov_sez.append({"ime strategije": par[0],"moč": par[1],"stopnja": rang})
+        nov_sez.append({"ime strategije": par[0].strip(),"moč": par[1].strip(),"stopnja": rang.strip()})
     return nov_sez
 
 # prilični je zaporedje pojavetve v html datoteki že razvrščeno po moči
@@ -92,8 +92,8 @@ def top_decks_reader(string):
     return nov_sez
 
     
-top_decks = top_decks_reader(read_file_to_string(mapa_podatkov, file_top_decks))
-write_csv(["ime strategije","število zbirov"], top_decks, mapa_podatkov, "top_decks.csv  ")
+# top_decks = top_decks_reader(read_file_to_string(mapa_podatkov, file_top_decks))
+# write_csv(["ime strategije","število zbirov"], top_decks, mapa_podatkov, "top_decks.csv  ")
 
 # že razvrščeno po številu objavljenih seznamov za strategijo
 
@@ -105,7 +105,7 @@ def get_decks_string():
     '''0 - deck id, 1 - avtor, 2 - zbirka(main, extrs, side), 3 - strategija '''
     vse = read_file_to_string(mapa_podatkov, file_top_decks)
     krajse = re.findall(r'ted\[\$gte\]=\(days-14.+?</script>', vse)
-    vzorec = r'\\"_id\\":\\"(.+?)\\",\\"author.+?username\\":\\"(.+?)".+?("main\\".+?"extra\\".+?"side\\".+?\]),\\"url.+?deckType\\":\{\\"name\\":\\"(.+?)\\"'
+    vzorec = r'\\"_id\\":\\"(\w+?)\\",\\"author.+?username\\":\\"(.+?)\\".+?("main\\".+?"extra\\".+?"side\\".+?\]),\\"url.+?deckType\\":\{\\"name\\":\\"(.+?)\\"'
     sez = re.findall(vzorec, krajse[0])
     return sez
 
@@ -139,11 +139,50 @@ def string_to_deck(string):
     deck["side"] = cards_side
     return deck
 
-mapa_zbirk = "podatki\zbirke"
+mapa_zbirk = "podatki\\zbirke"
 
-def decks_to_files_and_cvs(sez,directory=mapa_zbirk)):
+def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
+    '''sez = get_decks_string()'''
     os.makedirs(directory, exist_ok=True)
-    
+    nov_sez = []
+    for deck in sez:
+        deck_dict = {}
+        deck_id = deck[0]
+        karte = string_to_deck(deck[2])
+        file_name = deck_id + ".text"
+
+        deck_dict["strategija"] = deck[3]
+        deck_dict["avtor"] = deck[1]
+        deck_dict["zbir"] = file_name
+        deck_dict["id zbira"] = deck[0]
+        nov_sez.append(deck_dict)
+
+        path = os.path.join(directory, file_name)
+        with open(path, 'w', encoding='utf-8') as text_file:
+            print("#main", file=text_file)
+            for karta in karte["main"]:
+                print(f"{karta[0]} x{karta[1]}", file=text_file)
+            print("", file=text_file)
+            print("#extra", file=text_file)
+            for karta in karte["extra"]:
+                print(f"{karta[0]} x{karta[1]}", file=text_file)
+            print("", file=text_file)
+            print("!side", file=text_file)
+            for karta in karte["side"]:
+                print(f"{karta[0]} x{karta[1]}", file=text_file)
+
+
+
+
+    path = os.path.join(mapa_podatkov, "decks.csv")
+    with open(path, 'w', encoding='utf-8', newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, ["strategija","avtor","zbir", "id zbira"])
+        writer.writeheader()
+        for strat in nov_sez:
+            writer.writerow(strat)
+
+    return
+
 
 # def make_decks_file(zbirka, directory):
 
