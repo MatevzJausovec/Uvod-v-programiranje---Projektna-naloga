@@ -3,11 +3,13 @@ import os
 import requests
 import re
 
+
 html_tier_list = "https://www.masterduelmeta.com/tier-list"
 file_tier_list = "tier_list.html"
 html_top_decks = "https://www.masterduelmeta.com/top-decks"
 file_top_decks = "top_decks.html"
 mapa_podatkov = "podatki"
+mapa_zbirk = "podatki\\zbiri"
 
 # url --> html file splošno
 
@@ -102,9 +104,9 @@ def top_decks_reader(string):
 '''vsi zbiri (~350) so (na videz neurejeno) zbrani na koncu top_decks.html. Ideja je vse zbire shraniti v datoteke (po možnosti .ydk) 
 in nato imena teh datotek +kakšne ekstra podatke v csv'''
 
-def get_decks_string():
-    '''0 - deck id, 1 - avtor, 2 - zbirka(main, extrs, side), 3 - strategija '''
-    vse = read_file_to_string(mapa_podatkov, file_top_decks)
+def get_decks_string(vse):
+    '''0 - deck id, 1 - avtor, 2 - zbirka(main, extrs, side), 3 - strategija 
+    vse = read_file_to_string(mapa_podatkov, file_top_decks)'''
     krajse = re.findall(r'ted\[\$gte\]=\(days-14.+?</script>', vse)
     vzorec = r'\\"_id\\":\\"(\w+?)\\",\\"author.+?username\\":\\"(.+?)\\".+?("main\\".+?"extra\\".+?"side\\".+?\]),\\"url.+?deckType\\":\{\\"name\\":\\"(.+?)\\"'
     sez = re.findall(vzorec, krajse[0])
@@ -140,12 +142,14 @@ def string_to_deck(string):
     deck["side"] = cards_side
     return deck
 
-mapa_zbirk = "podatki\\zbirke"
-
 def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
-    '''sez = get_decks_string()'''
+    '''sez = get_decks_string()
+    1. naredi datoteke za posamezne zbire v podmapi zbiri
+    2. naredi datoteko csv vseh zbirov
+    3. naredi datoteko csv skupne pojavitve kart '''
     os.makedirs(directory, exist_ok=True)
     nov_sez = []
+    vse_karte = {}
     for deck in sez:
         deck_dict = {}
         deck_id = deck[0]
@@ -172,8 +176,11 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
             for karta in karte["side"]:
                 print(f"{karta[0]} x{karta[1]}", file=text_file)
 
-
-
+        for deck_part, cards in karte.items():
+            for card in cards:
+                if not card[0] in vse_karte:
+                    vse_karte[card[0]] = [0,deck_part]
+                vse_karte[card[0]][0] += int(card[1])
 
     path = os.path.join(mapa_podatkov, "decks.csv")
     with open(path, 'w', encoding='utf-8', newline='') as csv_file:
@@ -182,7 +189,41 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
         for strat in nov_sez:
             writer.writerow(strat)
 
+    stolpci = ["karta", "število", "lokacija"]
+    sez_vseh_kart = []
+    for karta, info in vse_karte.items():
+        dict = {stolpci[0]: karta, stolpci[1]: info[0], stolpci[2]: info[1]}
+        sez_vseh_kart.append(dict)
+
+    
+
+    path2 = os.path.join(mapa_podatkov, "total_cards.csv")
+    with open(path2, 'w', encoding='utf-8', newline='') as csv_file2:
+        writer2 = csv.DictWriter(csv_file2, stolpci,)
+        writer2.writeheader()
+        for strat in sez_vseh_kart:
+            writer2.writerow(strat)
+            
     return
 
+# Main
+
+def main(redownload=True, reparse=True):
+    if redownload:
+        save_frontpage(html_tier_list, mapa_podatkov, file_tier_list)
+        save_frontpage(html_top_decks, mapa_podatkov, file_top_decks)
+    if reparse:
+        tier_list = tier_list_reader(read_file_to_string(mapa_podatkov, file_tier_list))
+        write_csv(["ime strategije","moč","stopnja"], tier_list, mapa_podatkov, "tier_list.csv  ")
+
+        top_decks = top_decks_reader(read_file_to_string(mapa_podatkov, file_top_decks))
+        write_csv(["ime strategije","število zbirov"], top_decks, mapa_podatkov, "top_decks.csv  ")
+
+        sez = get_decks_string(read_file_to_string(mapa_podatkov, file_top_decks))
+        decks_to_files_and_cvs(sez)
+    return
+    
+if __name__ == '__main__':
+    main()
 
 
