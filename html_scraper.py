@@ -14,6 +14,7 @@ mapa_podatkov = "podatki"
 def download_url_to_string(url):
     try:
         page_content = requests.get(url)
+        page_content.encoding = 'UTF-8'
         return page_content.text
     except Exception:
         print("Napaka!")
@@ -184,11 +185,4 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
     return
 
 
-# def make_decks_file(zbirka, directory):
 
-
-#     filename = zbirka[0] + ".text"
-#     os.makedirs(directory, exist_ok=True)
-#     path = os.path.join(directory, filename)
-#     deck = zbirka[2]
-#     with open(path, 'w', encoding='utf-8') as text_file:
