@@ -38,7 +38,7 @@ def read_file_to_string(directory, filename):
     with open(os.path.join(directory,filename), encoding="utf-8") as f:
         return f.read()
     
-# shrani seznam --> csv
+# shrani seznam dicts --> csv
 
 def write_csv(fieldnames, rows, directory, filename):
     """
@@ -146,7 +146,7 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
     '''sez = get_decks_string()
     1. naredi datoteke za posamezne zbire v podmapi zbiri
     2. naredi datoteko csv vseh zbirov
-    3. naredi datoteko csv skupne pojavitve kart '''
+    3. naredi datoteko csv skupih pojavitev posameznih kart '''
     os.makedirs(directory, exist_ok=True)
     nov_sez = []
     vse_karte = {}
@@ -179,8 +179,9 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
         for deck_part, cards in karte.items():
             for card in cards:
                 if not card[0] in vse_karte:
-                    vse_karte[card[0]] = [0,deck_part]
+                    vse_karte[card[0]] = [0,0,deck_part]
                 vse_karte[card[0]][0] += int(card[1])
+                vse_karte[card[0]][1] += 1
 
     path = os.path.join(mapa_podatkov, "decks.csv")
     with open(path, 'w', encoding='utf-8', newline='') as csv_file:
@@ -189,10 +190,10 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
         for strat in nov_sez:
             writer.writerow(strat)
 
-    stolpci = ["karta", "število", "lokacija"]
+    stolpci = ["karta", "število pojavitve", "število zbirov", "lokacija"]
     sez_vseh_kart = []
     for karta, info in vse_karte.items():
-        dict = {stolpci[0]: karta, stolpci[1]: info[0], stolpci[2]: info[1]}
+        dict = {stolpci[0]: karta, stolpci[1]: info[0], stolpci[2]: info[1],  stolpci[3]: info[2]}
         sez_vseh_kart.append(dict)
 
     
@@ -209,19 +210,26 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
 # Main
 
 def main(redownload=True, reparse=True):
-    if redownload:
-        save_frontpage(html_tier_list, mapa_podatkov, file_tier_list)
-        save_frontpage(html_top_decks, mapa_podatkov, file_top_decks)
-    if reparse:
-        tier_list = tier_list_reader(read_file_to_string(mapa_podatkov, file_tier_list))
-        write_csv(["ime strategije","moč","stopnja"], tier_list, mapa_podatkov, "tier_list.csv  ")
+    """Iz meni nejasnega razloga, se včasih z url naslova ne naloži html iste oblike.
+    Če poskusi še enkrat deluje. Izgleda, da do tega pride ko prvič poskušaš naložiti html."""
+    try:
+        if redownload:
+            save_frontpage(html_tier_list, mapa_podatkov, file_tier_list)
+            save_frontpage(html_top_decks, mapa_podatkov, file_top_decks)
+        if reparse:
+            tier_list = tier_list_reader(read_file_to_string(mapa_podatkov, file_tier_list))
+            write_csv(["ime strategije","moč","stopnja"], tier_list, mapa_podatkov, "tier_list.csv  ")
 
-        top_decks = top_decks_reader(read_file_to_string(mapa_podatkov, file_top_decks))
-        write_csv(["ime strategije","število zbirov"], top_decks, mapa_podatkov, "top_decks.csv  ")
+            top_decks = top_decks_reader(read_file_to_string(mapa_podatkov, file_top_decks))
+            write_csv(["ime strategije","število zbirov"], top_decks, mapa_podatkov, "top_decks.csv  ")
 
-        sez = get_decks_string(read_file_to_string(mapa_podatkov, file_top_decks))
-        decks_to_files_and_cvs(sez)
+            sez = get_decks_string(read_file_to_string(mapa_podatkov, file_top_decks))
+            decks_to_files_and_cvs(sez)
+    except IndexError:
+        print("Wrong html, retrying")
+        main()
     return
+    
     
 if __name__ == '__main__':
     main()
