@@ -105,11 +105,12 @@ def top_decks_reader(string):
 in nato imena teh datotek +kakšne ekstra podatke v csv'''
 
 def get_decks_string(vse):
-    '''0 - deck id, 1 - avtor, 2 - zbirka(main, extrs, side), 3 - strategija 
+    '''0 - deck id, 1 - avtor, 2 - zbirka(main, extrs, side), 3 - strategija 4 - ranked type
     vse = read_file_to_string(mapa_podatkov, file_top_decks)'''
     krajse = re.findall(r'ted\[\$gte\]=\(days-14.+?</script>', vse)
-    vzorec = r'\\"_id\\":\\"(\w+?)\\",\\"author.+?username\\":\\"(.+?)\\".+?("main\\".+?"extra\\".+?"side\\".+?\]),\\"url.+?deckType\\":\{\\"name\\":\\"(.+?)\\"'
+    vzorec = r'\\"_id\\":\\"(\w+?)\\",\\"author.+?username\\":\\"(.+?)\\".+?("main\\".+?"extra\\".+?"side\\".+?\]),\\"url.+?deckType\\":\{\\"name\\":\\"(.+?)\\".+?rankedType\\":\{\\"name\\":\\(.+?)\\'
     sez = re.findall(vzorec, krajse[0])
+
     return sez
 
 def tuple_popravjalec(nterica,i=0):
@@ -120,7 +121,7 @@ def tuple_popravjalec(nterica,i=0):
     return tuple(sez)
 
 def string_to_deck(string):
-    '''pretvori sez[x][2] iz zgornje funkcije v uporabnejšo obliko'''
+    '''pretvori sez[x][2] iz get_decks_string v uporabnejšo obliko'''
     vzorec_split = r'\\"extra\\":|\\"side\\":'
     deck_parts = re.split(vzorec_split, string)
     deck = {"main": [], "extra": [], "side": []}
@@ -210,7 +211,7 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
 # Main
 
 def main(redownload=True, reparse=True):
-    """Iz meni nejasnega razloga, se včasih z url naslova ne naloži html iste oblike.
+    """Iz meni nejasnih razlogov, se včasih z url naslova ne naloži html iste oblike.
     Če poskusi še enkrat deluje. Izgleda, da do tega pride ko prvič poskušaš naložiti html."""
     try:
         if redownload:
