@@ -191,7 +191,7 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
         for strat in nov_sez:
             writer.writerow(strat)
 
-    stolpci = ["karta", "število pojavitve", "število zbirov", "lokacija"]
+    stolpci = ["karta", "število pojavitev", "število zbirov", "lokacija"]
     sez_vseh_kart = []
     for karta, info in vse_karte.items():
         dict = {stolpci[0]: karta, stolpci[1]: info[0], stolpci[2]: info[1],  stolpci[3]: info[2]}
