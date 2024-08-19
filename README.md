@@ -1,2 +1,2 @@
-# Uvod-v-programiranje---Projektna-naloga
-Projektna naloga na temo analize in predstavitve podatkov.
+# Analiza zbirov Yu-Gi-Oh! igralnih kart
+### Projektna naloga na temo analize in predstavitve podatkov.
