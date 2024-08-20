@@ -2,7 +2,7 @@
 #### Projektna naloga na temo analize in predstavitve podatkov.
 
 ## Cilji projekta in viri podatkov
-Cilj projekta je analizirati uspešnost različnih strategij in kart v igri Yu-Gi-Oh!. V ta namen sem zbral podatke o zbirih s spletne strani https://www.masterduelmeta.com.
+Cilj projekta je analizirati uspešnost različnih strategij in kart v igri Yu-Gi-Oh!. V ta namen sem zbral podatke o zbirih igralnih kart s spletne strani https://www.masterduelmeta.com.
 Glavnina podatkov je pribljižno 350 zbirov, pri čemer vsak vsebuje med 40 in 75 posameznih igralnih kart. Ob času pisanja je to 28358 kart. Poleg osnovne analize podatkov
 program omogoča še pregled prenesenih zbirov, njihovo izvažanje v obliki .ydk datoteke ter ogled podatkov posamezne karte.
 
@@ -14,9 +14,10 @@ shrani kot .csv in . text datoteke v podmapi **podatki**. Iz datoteke tier_list.
 za posamezno stretegijo (top_decks.csv), vse posamezne zbire (.text datoteke v mapi **zbiri**) ter prešteje pojavitve posameznih kart (total_cards.csv).
 
 Druga datoteka analizira podatke v csv datotekah. Pri tem uporablja knjižnice *pandas*, *matplotlib.mpatches* in *numbpy* za oblikovanje tabel in grafov.
-Datoteka omogoča tudi ogled pozameznih zbirov in kart v njih.
+Datoteka omogoča tudi ogled pozameznih zbirov in kart v njih. Zbiri kart ki jih program obdela so tisti, ki so jih uporabniki naložili v zadnjih dveh tednih,
+zato je analiza vsebinsko delno vezana na specifične podatke, ki so naloženi v repozitoriju.
 
 ## Navodila za uporabo
-Za delovaje programov je potrebno delujoče okolje jupyter notebooks z vsemi v zgornjem odseku omenjenimi knjižnicami. Za ogled podatkov je potrebno odpreti interaktivno
+Za delovaje programov je potrebno delujoče okolje jupyter notebooks z vsemi v zgornjem odseku omenjenimi knjižnicami. Za ogled analize podatkov je potrebno odpreti interaktivno
 datoteko *predstavitev.ipynb*. Na začetku te datoteke je zakomentirana (torej izkloplenja) opcija ponovnega nalaganja podatkov s spleta.
 Podatki naloženi v repozitoriju so z datuma 19. 8. 2024. 
