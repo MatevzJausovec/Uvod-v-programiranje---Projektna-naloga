@@ -17,6 +17,6 @@ Druga datoteka analizira podatke v csv datotekah. Pri tem uporablja knjižnice *
 Datoteka omogoča tudi ogled pozameznih zbirov in kart v njih.
 
 ## Navodila za uporabo
-Za delovaje programov je potrebno delujoče okolje jupyter notebooks z vsemi v zgornjem odseku omenjenimi knjižnicami. Za ogled podatkov je potrebno odpreti interaktivno
+Za delovaje programov je potrebno delujoče okolje jupyter notebooks z vsemi v zgornjem odseku omenjenimi knjižnicami. Za ogled analize podatkov je potrebno odpreti interaktivno
 datoteko *predstavitev.ipynb*. Na začetku te datoteke je zakomentirana (torej izkloplenja) opcija ponovnega nalaganja podatkov s spleta.
 Podatki naloženi v repozitoriju so z datuma 19. 8. 2024. 
