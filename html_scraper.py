@@ -74,7 +74,7 @@ def tier_list_reader(string):
         nov_sez.append({"ime strategije": par[0].strip(),"moč": par[1].strip(),"stopnja": rang.strip()})
     return nov_sez
 
-# prilični je zaporedje pojavetve v html datoteki že razvrščeno po moči
+# prilično je zaporedje pojavetve v html datoteki že razvrščeno po moči
 
 # tier_list = tier_list_reader(read_file_to_string(mapa_podatkov, file_tier_list))
 # write_csv(["ime strategije","moč","stopnja"], tier_list, mapa_podatkov, "tier_list.csv  ")
@@ -85,7 +85,7 @@ def tier_list_reader(string):
 
 def top_decks_reader(string):
     '''spodnji preprosti vzorec ima nekaj nezaželjenih zadetkov na začetku, 
-    zato niz skrašamo po sponjem vzorcu, ki ima natanko en zadetek'''
+    zato niz skrašamo v new_string'''
     new_string = string.split(r'mn mt-1 is-full-tablet safar')[1]
     vzorec = r'label svelte-1w4psuu padding">(?P<ime_strategije>.+?)</div>.+?bottom-sub-label svelte-1w4psuu">(?P<število_zbirov>\d+)</div></div>'
     sez = re.findall(vzorec, new_string, flags=re.DOTALL)
@@ -101,7 +101,7 @@ def top_decks_reader(string):
 # že razvrščeno po številu objavljenih seznamov za strategijo
 
 # 3. del: ekstahiranje zbirov kart
-'''vsi zbiri (~350) so (na videz neurejeno) zbrani na koncu top_decks.html. Ideja je vse zbire shraniti v datoteke (po možnosti .ydk) 
+'''vsi zbiri (~350) so (na videz neurejeno) zbrani na koncu top_decks.html. Ideja je vse zbire shraniti v datoteke 
 in nato imena teh datotek +kakšne ekstra podatke v csv'''
 
 def get_decks_string(vse):
@@ -144,10 +144,11 @@ def string_to_deck(string):
     return deck
 
 def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
-    '''sez = get_decks_string()
+    '''sez = get_decks_string(vse)
     1. naredi datoteke za posamezne zbire v podmapi zbiri
     2. naredi datoteko csv vseh zbirov
     3. naredi datoteko csv skupih pojavitev posameznih kart '''
+
     os.makedirs(directory, exist_ok=True)
     nov_sez = []
     vse_karte = {}
@@ -181,6 +182,8 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
             for card in cards:
                 if not card[0] in vse_karte:
                     vse_karte[card[0]] = [0,0,deck_part]
+                if vse_karte[card[0]][2] == "side":
+                    vse_karte[card[0]][2] = deck_part
                 vse_karte[card[0]][0] += int(card[1])
                 vse_karte[card[0]][1] += 1
 
@@ -197,8 +200,6 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
         dict = {stolpci[0]: karta, stolpci[1]: info[0], stolpci[2]: info[1],  stolpci[3]: info[2]}
         sez_vseh_kart.append(dict)
 
-    
-
     path2 = os.path.join(mapa_podatkov, "total_cards.csv")
     with open(path2, 'w', encoding='utf-8', newline='') as csv_file2:
         writer2 = csv.DictWriter(csv_file2, stolpci,)
@@ -211,8 +212,9 @@ def decks_to_files_and_cvs(sez,directory=mapa_zbirk):
 # Main
 
 def main(redownload=True, reparse=True):
-    """Iz meni nejasnih razlogov, se včasih z url naslova ne naloži html iste oblike.
-    Če poskusi še enkrat deluje. Izgleda, da do tega pride ko prvič poskušaš naložiti html."""
+    """Iz meni neznanih razlogov, se včasih z url naslova ne naloži html iste oblike.
+    Če poskusi še enkrat deluje. Izgleda, da do tega pride ko prvič poskušaš naložiti html.
+    V tem primeru top_decks_reader() poskuša iterirati prazen seznam, zato IndexError"""
     try:
         if redownload:
             save_frontpage(html_tier_list, mapa_podatkov, file_tier_list)
