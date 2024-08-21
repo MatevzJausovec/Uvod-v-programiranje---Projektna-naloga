@@ -60,18 +60,18 @@ def write_csv(fieldnames, rows, directory, filename):
 
 
 def tier_list_reader(string):
-    vzorec = r'<div class="label svelte-1w4psuu">(?P<ime_strategije>.+?)</div>.+?<div class="power-label svelte-1winidr">Power: <b>(?P<moč>\d\d?\.\d)</b></div>'
+    vzorec = r'<div class="label svelte-1w4psuu">(?P<ime_strategije>.+?)</div>.+?<div class="power-label svelte-1winidr">Power: <b>(?P<moc>\d\d?\.\d)</b></div>'
     sez = re.findall(vzorec, string, flags=re.DOTALL)
     nov_sez = []
     for par in sez:
-        rang = "ni uvrščen"
+        rang = "slab"
         if float(par[1]) >= 12:
             rang = "1."
         elif float(par[1]) >= 7:
             rang = "2."
         elif float(par[1]) >= 3:
             rang = "3."
-        nov_sez.append({"ime strategije": par[0].strip(),"moč": par[1].strip(),"stopnja": rang.strip()})
+        nov_sez.append({"ime strategije": par[0].strip(),"moc": par[1].strip(),"stopnja": rang.strip()})
     return nov_sez
 
 # prilično je zaporedje pojavetve v html datoteki že razvrščeno po moči
@@ -234,7 +234,7 @@ def main(redownload=True, reparse=True):
     return
     
     
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
 
 
