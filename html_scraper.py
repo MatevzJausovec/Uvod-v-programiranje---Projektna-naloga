@@ -234,7 +234,7 @@ def main(redownload=True, reparse=True):
     return
     
     
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()
 
 
