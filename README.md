@@ -4,7 +4,7 @@
 ## Cilji projekta in viri podatkov
 Cilj projekta je analizirati uspešnost različnih strategij in kart v igri Yu-Gi-Oh!. V ta namen sem zbral podatke o zbirih igralnih kart s spletne strani https://www.masterduelmeta.com.
 Glavnina podatkov je približno 350 zbirov, pri čemer vsak vsebuje med 40 in 75 posameznih igralnih kart. Ob času pisanja je to 28358 kart. Poleg osnovne analize podatkov
-program omogoča še pregled prenesenih zbirov, njihovo izvažanje v obliki .ydk datoteke ter ogled podatkov posamezne karte.
+program omogoča še pregled prenesenih zbirov ter njihovo izvažanje v obliki .ydk datoteke.
 
 ### Delovanje programa
 Program je razdeljen v datoteki **html_scraper.py** in **predstavitev.ipynb**. 
