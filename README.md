@@ -20,4 +20,4 @@ zato je analiza vsebinsko delno vezana na specifične podatke, ki so naloženi v
 ## Navodila za uporabo
 Za delovaje programov je potrebno delujoče okolje jupyter notebooks z vsemi v zgornjem odseku omenjenimi knjižnicami. Za ogled analize podatkov je potrebno 
 odpreti interaktivno datoteko *predstavitev.ipynb*. Na začetku te datoteke je zakomentirana (izkloplenja) opcija ponovnega nalaganja podatkov s spleta.
-Podatki naloženi v repozitoriju so z datuma 19. 8. 2024. 
+Podatki naloženi v repozitoriju so z datuma 21. 8. 2024. 
