@@ -15,9 +15,9 @@ za posamezno stretegijo (top_decks.csv), vse posamezne zbire (.text datoteke v p
 
 Druga datoteka analizira podatke v csv datotekah. Pri tem uporablja knjižnice *pandas*, *matplotlib* in *numbpy* za oblikovanje tabel in grafov.
 Datoteka omogoča tudi ogled pozameznih zbirov in prenos izbranega zbira v format .ydk. Za zadnji del so uporabljene funkcije iz tretje pomožne datoteke.
-V tej je uporebljena tudi knjižnica *json*
+V tej je uporebljena tudi knjižnica *json*.
 
-Zbiri kart, ki jih program obdela so tisti, ki so jih uporabniki naložili v zadnjih dveh tednih,zato je analiza vsebinsko delno vezana na
+Zbiri kart, ki jih program obdela so tisti, ki so jih uporabniki naložili v zadnjih dveh tednih, zato je analiza vsebinsko delno vezana na
 specifične podatke, ki so naloženi v repozitoriju. Podatki naloženi v repozitoriju so z datuma 21. 8. 2024. 
 
 ## Navodila za uporabo
